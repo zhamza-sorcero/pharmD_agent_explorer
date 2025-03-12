@@ -598,7 +598,7 @@ def main():
     
     # App header
     st.markdown("<h1>PharmD Agent Explorer</h1>", unsafe_allow_html=True)
-    st.markdown("<h3>Generate comprehensive markdown profiles for pharmaceutical assets using AI</h3>", unsafe_allow_html=True)
+    st.markdown("<h3>Generate profiles for pharmaceutical assets using Sorcero AI and buit-in domain data in the Sorcero Scientific Data Pool</h3>", unsafe_allow_html=True)
 
     # Add a sidebar option to clear results
     if st.session_state.get('results_displayed', False):
@@ -622,7 +622,7 @@ def main():
         col1, col2 = st.columns([4, 1])
         
         with col1:
-            drug_name = st.text_input("", placeholder="Enter Asset name (e.g., Vivaflerud, ONCO-552)", label_visibility="collapsed")
+            drug_name = st.text_input("", placeholder="Enter Asset name", label_visibility="collapsed")
             
         with col2:
             generate_button = st.button("Generate Profile", use_container_width=True)
