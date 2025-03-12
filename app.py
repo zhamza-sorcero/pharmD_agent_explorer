@@ -134,66 +134,42 @@ def add_sidebar_and_styling():
         .stButton > button {
             background-color: #6E7680;
             color: white;
-            padding: 8px 16px;
+            padding: 10px 20px;
             font-weight: 500;
-            border-radius: 6px;
+            border-radius: 8px;
             border: none;
             transition: background-color 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 38px;
         }
         
         .stButton > button:hover {
             background-color: #5A6169;
         }
         
-        /* Input field styling */
-        .stTextInput > div > div > input {
-            padding: 8px 12px;
-            font-size: 15px;
-            border: 1px solid #E0E0E0;
-            border-radius: 4px;
-            height: 38px;
-        }
-        
         /* Card styling for the form */
         .card {
             background-color: white;
-            border-radius: 8px;
-            padding: 24px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            margin: 20px 0;
-        }
-        
-        /* Headings */
-        h1, h2, h3 {
-            font-weight: 600;
-        }
-        
-        h2 {
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-        
-        p {
-            color: #666;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             margin-bottom: 20px;
         }
         
-        /* Generate Profile button icon */
-        .generate-btn-content {
-            display: flex;
+        /* Back button styling */
+        .back-button {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
+            color: #555;
+            font-weight: 500;
+            margin-bottom: 20px;
+            cursor: pointer;
         }
         
-        .generate-btn-icon {
-            margin-right: 8px;
+        .back-icon {
+            margin-right: 5px;
         }
     </style>
     """, unsafe_allow_html=True)
+
     
     # Company logo at the top of the sidebar
     st.sidebar.markdown('<div class="company-logo"><img src="https://s3.amazonaws.com/blab-impact-published-production/hLpfiMdVZIGcRiEjW6Yg1aP6qeI933uF" width="120"></div>', unsafe_allow_html=True)
