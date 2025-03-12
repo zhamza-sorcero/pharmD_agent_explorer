@@ -119,7 +119,7 @@ def add_sidebar_and_styling():
         
         /* Main content area styling */
         .main-content {
-            padding: 20px 40px;
+            padding: 15px 30px;
         }
         
         /* Input field styling */
@@ -172,7 +172,7 @@ def add_sidebar_and_styling():
 
     
     # Company logo at the top of the sidebar
-    st.sidebar.markdown('<div class="company-logo"><img src="https://s3.amazonaws.com/blab-impact-published-production/hLpfiMdVZIGcRiEjW6Yg1aP6qeI933uF" width="120"></div>', unsafe_allow_html=True)
+    st.sidebar.markdown('<div class="company-logo"><img src="https://s3.amazonaws.com/blab-impact-published-production/hLpfiMdVZIGcRiEjW6Yg1aP6qeI933uF" width="128"></div>', unsafe_allow_html=True)
     
     # Navigation items
     nav_items = [
