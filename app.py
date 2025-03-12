@@ -12,7 +12,6 @@ from pathlib import Path
 # Import the ontology builder and profile generator from the existing code
 from drug_ontology import DrugOntologyBuilder, DrugAssetProfileGenerator, generate_asset_markdown
 
-
 # Custom function to add the sidebar logo and navigation
 def add_sidebar_and_styling():
     # Add custom CSS for styling the sidebar and overall app appearance
@@ -23,14 +22,14 @@ def add_sidebar_and_styling():
             background-color: #F8F9FA;
             font-family: 'Inter', sans-serif;
         }
-
+        
         /* Sidebar styling */
         section[data-testid="stSidebar"] {
             background-color: white;
             border-right: 1px solid #EAEAEA;
             padding-top: 0;
         }
-
+        
         /* Top company logo area in sidebar */
         .company-logo {
             padding: 20px 0;
@@ -38,7 +37,7 @@ def add_sidebar_and_styling():
             border-bottom: 1px solid #EAEAEA;
             margin-bottom: 20px;
         }
-
+        
         /* Navigation items styling */
         .nav-item {
             display: flex;
@@ -51,18 +50,18 @@ def add_sidebar_and_styling():
             text-decoration: none;
             font-weight: 500;
         }
-
+        
         .nav-item:hover {
             background-color: #F0F2F5;
             cursor: pointer;
         }
-
+        
         .nav-item.active {
             background-color: #F0F2F5;
             font-weight: bold;
             color: #111;
         }
-
+        
         /* Icon styling within nav items */
         .nav-icon {
             margin-right: 10px;
@@ -70,14 +69,14 @@ def add_sidebar_and_styling():
             height: 24px;
             text-align: center;
         }
-
+        
         /* Separator line */
         .separator {
             height: 1px;
             background-color: #EAEAEA;
             margin: 20px 0;
         }
-
+        
         /* User profile area at bottom of sidebar */
         .user-profile {
             display: flex;
@@ -89,7 +88,7 @@ def add_sidebar_and_styling():
             width: 100%;
             background-color: white;
         }
-
+        
         .user-avatar {
             width: 36px;
             height: 36px;
@@ -102,27 +101,27 @@ def add_sidebar_and_styling():
             font-weight: bold;
             color: #555;
         }
-
+        
         .user-info {
             display: flex;
             flex-direction: column;
         }
-
+        
         .user-name {
             font-weight: 600;
             font-size: 14px;
         }
-
+        
         .user-email {
             font-size: 12px;
             color: #777;
         }
-
+        
         /* Main content area styling */
         .main-content {
             padding: 20px 40px;
         }
-
+        
         /* Input field styling */
         .stTextInput > div > div > input {
             padding: 10px 15px;
@@ -130,7 +129,7 @@ def add_sidebar_and_styling():
             border: 1px solid #EAEAEA;
             border-radius: 8px;
         }
-
+        
         /* Button styling */
         .stButton > button {
             background-color: #6E7680;
@@ -141,11 +140,11 @@ def add_sidebar_and_styling():
             border: none;
             transition: background-color 0.3s;
         }
-
+        
         .stButton > button:hover {
             background-color: #5A6169;
         }
-
+        
         /* Card styling for the form */
         .card {
             background-color: white;
@@ -154,7 +153,7 @@ def add_sidebar_and_styling():
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             margin-bottom: 20px;
         }
-
+        
         /* Back button styling */
         .back-button {
             display: inline-flex;
@@ -164,18 +163,16 @@ def add_sidebar_and_styling():
             margin-bottom: 20px;
             cursor: pointer;
         }
-
+        
         .back-icon {
             margin-right: 5px;
         }
     </style>
     """, unsafe_allow_html=True)
-
+    
     # Company logo at the top of the sidebar
-    st.sidebar.markdown(
-        '<div class="company-logo"><img src="https://s3.amazonaws.com/blab-impact-published-production/hLpfiMdVZIGcRiEjW6Yg1aP6qeI933uF" width="128"></div>',
-        unsafe_allow_html=True)
-
+    st.sidebar.markdown('<div class="company-logo"><img src="https://s3.amazonaws.com/blab-impact-published-production/hLpfiMdVZIGcRiEjW6Yg1aP6qeI933uF" width="120"></div>', unsafe_allow_html=True)
+    
     # Navigation items
     nav_items = [
         {"icon": "🏠", "label": "Home", "active": True},
@@ -186,7 +183,7 @@ def add_sidebar_and_styling():
         {"icon": "📊", "label": "Reports", "active": False},
         {"icon": "🛠️", "label": "Tools", "active": False},
     ]
-
+    
     for item in nav_items:
         active_class = "active" if item["active"] else ""
         st.sidebar.markdown(f'''
@@ -195,10 +192,10 @@ def add_sidebar_and_styling():
             <div>{item["label"]}</div>
         </div>
         ''', unsafe_allow_html=True)
-
+    
     # Separator
     st.sidebar.markdown('<div class="separator"></div>', unsafe_allow_html=True)
-
+    
     # Instant Insights
     st.sidebar.markdown(f'''
     <div class="nav-item">
@@ -206,18 +203,17 @@ def add_sidebar_and_styling():
         <div>Instant Insights</div>
     </div>
     ''', unsafe_allow_html=True)
-
+    
     # User profile at the bottom
     st.sidebar.markdown(f'''
     <div class="user-profile">
         <div class="user-avatar">DD</div>
         <div class="user-info">
             <div class="user-name">Dipanwita Das</div>
-            <div class="user-email">ddas@sorcero.com</div>
+            <div class="user-email">ddas@sorcero.com.com</div>
         </div>
     </div>
     ''', unsafe_allow_html=True)
-
 
 # Function to get base64 encoded string for an image
 def get_base64_of_image(image_path):
@@ -229,7 +225,6 @@ def get_base64_of_image(image_path):
         # Return a placeholder or default value if image not found
         return ""
 
-
 # Function to set page icon and config
 def set_page_config():
     # Set page configuration with the logo as the icon
@@ -238,7 +233,6 @@ def set_page_config():
         page_icon="💊",
         layout="wide"
     )
-
 
 # Function to fetch drug data from external APIs
 def fetch_drug_data(drug_name):
@@ -593,18 +587,17 @@ def augment_drug_data_with_claude(drug_name, existing_data):
 def main():
     # Set page configuration
     set_page_config()
-
+    
     # Add sidebar and styling
     add_sidebar_and_styling()
-
+    
     # Main content area with back button if in results mode
     if st.session_state.get('results_displayed', False):
         st.markdown('<div class="back-button"><span class="back-icon">←</span> Back</div>', unsafe_allow_html=True)
-
+    
     # App header
     st.markdown("<h1>PharmD Agent Explorer</h1>", unsafe_allow_html=True)
-    st.markdown("<h3>Generate comprehensive markdown profiles for pharmaceutical assets using AI</h3>",
-                unsafe_allow_html=True)
+    st.markdown("<h3>Generate comprehensive markdown profiles for pharmaceutical assets using AI</h3>", unsafe_allow_html=True)
 
     # Add a sidebar option to clear results
     if st.session_state.get('results_displayed', False):
@@ -617,22 +610,22 @@ def main():
 
     # If results are not displayed, show the input form
     if not st.session_state.get('results_displayed', False):
+        # Move these titles outside the card to match the design
+        st.markdown("<h2>Generate Asset Profile</h2>", unsafe_allow_html=True)
+        st.markdown("<p>Enter the name of a pharmaceutical asset to generate a detailed markdown profile</p>", unsafe_allow_html=True)
+        
         # Create a card-like container for the form
         st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown("<h2>Generate Asset Profile</h2>", unsafe_allow_html=True)
-        st.markdown("<p>Enter the name of a pharmaceutical asset to generate a detailed markdown profile</p>",
-                    unsafe_allow_html=True)
-
+        
         # Create a form with a more modern design
         col1, col2 = st.columns([4, 1])
-
+        
         with col1:
-            drug_name = st.text_input("", placeholder="Enter Asset name (e.g., Vivaflerud, ONCO-552)",
-                                      label_visibility="collapsed")
-
+            drug_name = st.text_input("", placeholder="Enter Asset name (e.g., Vivaflerud, ONCO-552)", label_visibility="collapsed")
+            
         with col2:
             generate_button = st.button("Generate Profile", use_container_width=True)
-
+        
         st.markdown('</div>', unsafe_allow_html=True)
 
         if generate_button and drug_name:
