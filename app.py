@@ -627,7 +627,6 @@ def main():
         with col2:
             generate_button = st.button("Generate Profile", use_container_width=True)
         
-        st.markdown('</div>', unsafe_allow_html=True)
 
         if generate_button and drug_name:
             with st.spinner(f"Generating profile for {drug_name}..."):
