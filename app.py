@@ -210,10 +210,10 @@ def add_sidebar_and_styling():
     # User profile at the bottom
     st.sidebar.markdown(f'''
     <div class="user-profile">
-        <div class="user-avatar">JD</div>
+        <div class="user-avatar">DD</div>
         <div class="user-info">
-            <div class="user-name">John Doe</div>
-            <div class="user-email">john@example.com</div>
+            <div class="user-name">Dipanwita Das</div>
+            <div class="user-email">ddas@sorcero.com</div>
         </div>
     </div>
     ''', unsafe_allow_html=True)
