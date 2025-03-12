@@ -610,12 +610,12 @@ def main():
 
     # If results are not displayed, show the input form
     if not st.session_state.get('results_displayed', False):
-        # Move these titles outside the card to match the design
-        st.markdown("<h2>Generate Asset Profile</h2>", unsafe_allow_html=True)
-        st.markdown("<p>Enter the name of a pharmaceutical asset to generate a detailed markdown profile</p>", unsafe_allow_html=True)
-        
         # Create a card-like container for the form
         st.markdown('<div class="card">', unsafe_allow_html=True)
+        
+        # Put these titles inside the card to match the design
+        st.markdown("<h2>Generate Asset Profile</h2>", unsafe_allow_html=True)
+        st.markdown("<p>Enter the name of a pharmaceutical asset to generate a detailed markdown profile</p>", unsafe_allow_html=True)
         
         # Create a form with a more modern design
         col1, col2 = st.columns([4, 1])
