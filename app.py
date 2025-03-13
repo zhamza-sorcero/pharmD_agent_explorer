@@ -669,7 +669,7 @@ def main():
                 st.session_state.drug_data = None
                 st.session_state.profile = None
                 st.session_state.visualization = None
-                st.experimental_rerun()
+                st.rerun()
 
 
 # Initialize session state if needed
