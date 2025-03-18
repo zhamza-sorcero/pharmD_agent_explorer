@@ -635,13 +635,38 @@ class DrugAssetProfileGenerator:
         if "BLA/NDA Number:" in fda_text:
             bla_nda = fda_text.split("BLA/NDA Number:")[1].split(".")[0].strip()
 
+        # Extract chemical formula from any available source
+        formula = "Not Available"
+
+        # Check in FDA data
+        fda_text = source_data.get("fda_purple_book", {}).get("text", "")
+        formula_match = re.search(r'Chemical Formula:?\s*([A-Za-z0-9]+)', fda_text)
+        if formula_match:
+            formula = formula_match.group(1)
+
+        # If not found, check in DailyMed data
+        if formula == "Not Available":
+            daily_med_text = source_data.get("daily_med", {}).get("text", "")
+            formula_match = re.search(r'Chemical Formula:?\s*([A-Za-z0-9]+)', daily_med_text)
+            if formula_match:
+                formula = formula_match.group(1)
+
+        # If still not found, check in PubMed articles
+        if formula == "Not Available":
+            for article in source_data.get("pubmed", []):
+                article_text = article.get("text", "")
+                formula_match = re.search(r'(?:Chemical|Molecular) Formula:?\s*([A-Za-z0-9]+)', article_text)
+                if formula_match:
+                    formula = formula_match.group(1)
+                    break
+
         profile["identifiers"] = {
             "brand_name": brand_name,
             "generic_name": asset_name.lower(),
             "approval_date": approval_date,
             "manufacturer": manufacturer,
             "bla_nda": bla_nda,
-            "chemical_formula": "Not Available"  # This would typically come from a chemistry database
+            "chemical_formula": formula
         }
 
         # Process approval status
@@ -1004,5 +1029,175 @@ def generate_asset_markdown(profile, visualization):
     # Add semantic network
     markdown_text += "### Semantic Network\n\n"
     markdown_text += "```\n" + profile["Drug Ontology"]["semantic_network"] + "\n```\n\n"
+
+    return markdown_text
+
+
+def generate_enhanced_asset_markdown(profile, visualization, chemical_structure=None):
+    """Generate an enhanced markdown representation of the asset profile with chemical structure and more details."""
+
+    # Start with the title
+    markdown_text = f"# {profile['Asset Profile']} Asset Profile\n\n"
+
+    # Add identifiers section
+    identifiers = profile["Identifiers"]
+    markdown_text += "## Identifiers\n\n"
+    markdown_text += f"**Brand Name:** {identifiers['Brand Name']}  \n"
+    markdown_text += f"**Generic Name:** {identifiers['Generic Name']}  \n"
+    markdown_text += f"**Approval Date:** {identifiers['Approval Date']}  \n"
+    markdown_text += f"**Manufacturer:** {identifiers['Manufacturer']}  \n"
+    markdown_text += f"**BLA/NDA Number:** {identifiers['BLA/NDA Number']}  \n"
+    markdown_text += f"**Chemical Formula:** {identifiers['Chemical Formula']}  \n\n"
+
+    # Add approval status
+    status = profile["Approval Status"]
+    markdown_text += "## Approval Status\n\n"
+    markdown_text += f"**Status:** {status['Status']}  \n"
+    markdown_text += f"**Drug Class:** {status['Drug Class']}  \n"
+    markdown_text += f"**Type:** {status['Type']}  \n\n"
+
+    # Add chemical structure section if available
+    if chemical_structure and chemical_structure.get('image_url'):
+        markdown_text += "## Chemical Structure\n\n"
+        markdown_text += f'<img src="{chemical_structure["image_url"]}" alt="Chemical structure" width="300">\n\n'
+
+        # Add chemical properties if available
+        if chemical_structure.get('properties'):
+            markdown_text += "### Chemical Properties\n\n"
+            markdown_text += f"```\n{chemical_structure['properties']}\n```\n\n"
+
+    # Add indications
+    markdown_text += "## Indications & Usage\n\n"
+    for indication in profile["Indications & Usage"]:
+        markdown_text += f"- {indication}\n"
+    markdown_text += "\n"
+
+    # Add mechanism of action with enhanced formatting
+    markdown_text += "## Mechanism of Action\n\n"
+
+    # Check if mechanism of action contains receptor information
+    moa_text = profile['Mechanism of Action']
+    receptors_mentioned = any(term in moa_text.lower() for term in
+                              ['receptor', 'bind', 'agonist', 'antagonist', 'serotonin', 'dopamine',
+                               'adrenergic', 'histamine', 'muscarinic', 'nmda', 'gaba'])
+
+    markdown_text += f"{moa_text}\n\n"
+
+    # If receptors are mentioned, add a note about the binding profile
+    if receptors_mentioned:
+        markdown_text += "### Receptor Binding Profile\n\n"
+        markdown_text += "Based on the mechanism of action, this drug likely interacts with:\n\n"
+
+        # Extract potential receptor targets from the mechanism text
+        targets = []
+        if 'dopamine' in moa_text.lower() or 'd2' in moa_text.lower():
+            targets.append("Dopamine D2 receptors")
+        if 'serotonin' in moa_text.lower() or '5-ht' in moa_text.lower():
+            targets.append("Serotonin (5-HT) receptors")
+        if 'adrenergic' in moa_text.lower() or 'norepinephrine' in moa_text.lower():
+            targets.append("Adrenergic receptors")
+        if 'histamine' in moa_text.lower() or 'h1' in moa_text.lower():
+            targets.append("Histamine receptors")
+        if 'muscarinic' in moa_text.lower() or 'acetylcholine' in moa_text.lower():
+            targets.append("Muscarinic receptors")
+        if 'gaba' in moa_text.lower():
+            targets.append("GABA receptors")
+        if 'nmda' in moa_text.lower() or 'glutamate' in moa_text.lower():
+            targets.append("Glutamate receptors")
+
+        # Add the targets to the markdown
+        if targets:
+            for target in targets:
+                markdown_text += f"- {target}\n"
+        else:
+            markdown_text += "- Multiple receptor systems (see mechanism of action for details)\n"
+
+        markdown_text += "\n"
+
+    # Add clinical evidence
+    markdown_text += "## Clinical Evidence Summary\n\n"
+    for i, evidence in enumerate(profile["Clinical Evidence Summary"], 1):
+        markdown_text += f"### {evidence['trial_name']}\n\n"
+        markdown_text += f"**Phase:** {evidence['phase']}  \n"
+        markdown_text += f"**Population:** {evidence['population']}  \n"
+        markdown_text += f"**Key Results:** {evidence['key_results']}  \n"
+        markdown_text += f"**Safety:** {evidence['safety']}  \n\n"
+
+    # Add ontology visualization
+    markdown_text += "## Drug Ontology\n\n"
+    markdown_text += "### Visualization\n\n"
+    markdown_text += "```\n" + visualization + "\n```\n\n"
+
+    # Add classification hierarchy
+    ont = profile["Drug Ontology"]["classifications"]
+    markdown_text += "### Classification Hierarchy\n\n"
+
+    markdown_text += "#### Pharmaceutical Classification\n\n"
+    pharm = ont["pharmaceutical"]
+    markdown_text += f"- **Class:** {pharm['class']}\n"
+    markdown_text += f"- **Subclass:** {pharm['subclass']}\n"
+    markdown_text += f"- **Family:** {pharm['family']}\n"
+    markdown_text += f"- **Subfamily:** {pharm['subfamily']}\n"
+    markdown_text += f"- **Type:** {pharm['type']}\n"
+    markdown_text += f"- **Agent:** {pharm['agent']}\n\n"
+
+    markdown_text += "#### Pharmacological Classification\n\n"
+    markdown_text += f"- **Primary Mechanism:** {ont['pharmacological']['primary_mechanism']}\n"
+    markdown_text += "- **Targets:**\n"
+    for target in ont["pharmacological"]["targets"]:
+        markdown_text += f"  - {target['receptor']} ({target['family']}): {target['activity']}\n"
+    markdown_text += "\n"
+
+    markdown_text += "#### Therapeutic Classification\n\n"
+    for area, conditions in ont["therapeutic"].items():
+        markdown_text += f"- **{area}:**\n"
+        for condition in conditions:
+            markdown_text += f"  - {condition}\n"
+    markdown_text += "\n"
+
+    markdown_text += "#### Chemical Classification\n\n"
+    chem = ont["chemical"]
+    markdown_text += f"- **Structure Type:** {chem['structure_type']}\n"
+    markdown_text += f"- **Chemical Class:** {chem['chemical_class']}\n"
+    markdown_text += f"- **Formula:** {chem['formula']}\n"
+    markdown_text += "- **Related Compounds:**\n"
+    for compound in chem["related_compounds"]:
+        markdown_text += f"  - {compound['name']} ({compound['relation_type']})\n"
+    markdown_text += "\n"
+
+    # Add relationships
+    markdown_text += "### Ontological Relationships\n\n"
+    relationships = profile["Drug Ontology"]["relationships"]
+
+    # Group relationships by type
+    rel_by_type = {}
+    for rel in relationships:
+        rel_type = rel["type"]
+        if rel_type not in rel_by_type:
+            rel_by_type[rel_type] = []
+        rel_by_type[rel_type].append(rel)
+
+    # Display relationships by type
+    for rel_type, rels in rel_by_type.items():
+        markdown_text += f"#### {rel_type.replace('_', ' ').title()}\n\n"
+        for rel in rels:
+            markdown_text += f"- {rel['subject']} → {rel['object']}\n"
+        markdown_text += "\n"
+
+    # Add semantic network
+    markdown_text += "### Semantic Network\n\n"
+    markdown_text += "```\n" + profile["Drug Ontology"]["semantic_network"] + "\n```\n\n"
+
+    # Add new references section
+    markdown_text += "## References and Resources\n\n"
+    markdown_text += "### Key Databases\n\n"
+    markdown_text += f"- [FDA Drug Information](https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&ApplNo={identifiers['BLA/NDA Number'] if identifiers['BLA/NDA Number'] != 'Unknown' else ''})\n"
+    markdown_text += f"- [DailyMed](https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query={profile['Asset Profile']})\n"
+    markdown_text += f"- [ClinicalTrials.gov](https://clinicaltrials.gov/search?term={profile['Asset Profile']})\n"
+    markdown_text += f"- [PubMed](https://pubmed.ncbi.nlm.nih.gov/?term={profile['Asset Profile']})\n"
+    markdown_text += f"- [PubChem](https://pubchem.ncbi.nlm.nih.gov/#query={profile['Asset Profile']})\n\n"
+
+    markdown_text += "### Notes\n\n"
+    markdown_text += "This profile was generated using Sorcero AI and data from public pharmaceutical databases.\n"
 
     return markdown_text
